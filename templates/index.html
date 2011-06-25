@@ -7,13 +7,21 @@ $:render.header()
                 <h2 class="box">待办事项</h2>
                 <ul>
                     $for todo in todos:
-                        <li>
-                            $todo.title
-                            &nbsp;
-                            <span class="action">
-                                <a href="/todo/$todo.id/edit">修改</a>,
-                                <a href="/todo/$todo.id/delete" onclick="return confirm('删除以后不能恢复的，确定？')">删除</a>
-                            </span>
+                        $if todo.finished == 1:
+                            $ status = 'class="finished"'
+                        $else:
+                            $ status = ''
+                        <li $:status>
+                            $if todo.finished == 0:
+                                $todo.title
+                                &nbsp;
+                                <a href="/todo/$todo.id/finish?status=yes">完成</a>,
+                            $if todo.finished == 1:
+                                <del>$todo.title</del>
+                                &nbsp;
+                                <a href="/todo/$todo.id/finish?status=no">恢复</a>,
+                            <a href="/todo/$todo.id/edit">修改</a>,
+                            <a href="/todo/$todo.id/delete" onclick="return confirm('删除以后不能恢复的，确定？')">删除</a>
                         </li>
                 </ul>
             </div>
