@@ -26,6 +26,24 @@ class New:
         raise web.seeother('/')
 
 
+class Finish:
+
+    def GET(self, id):
+        todo = get_by_id(id)
+        if not todo:
+            return render.error('没找到这条记录', None)
+        i = web.input()
+        status = i.get('status', 'yes')
+        if status == 'yes':
+            finished = 1
+        elif status == 'no':
+            finished = 0
+        else:
+            return render.error('您发起了一个不允许的请求', '/')
+        db.update(tb, finished=finished, where='id=$id', vars=locals())
+        raise web.seeother('/')
+
+
 class Edit:
 
     def GET(self, id):
@@ -58,5 +76,5 @@ class Delete:
 class Index:
 
     def GET(self):
-        todos = db.select(tb, order='id asc')
+        todos = db.select(tb, order='finished asc, id asc')
         return render.index(todos)
